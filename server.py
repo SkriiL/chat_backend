@@ -1,5 +1,6 @@
 from aiohttp import web
 import socketio
+import messages
 
 sio = socketio.AsyncServer()
 app = web.Application()
@@ -12,14 +13,25 @@ async def index(request):
 
 
 @sio.on('message')
-def print_message(sid, message):
-    sio.enter_room(sid, 'room')
-    sio.emit('message', message, room='room')
-    print("Socket ID: " , sid)
+async def print_message(sid, message):
+    sio.enter_room(sid, 'standard')
+    await send_message(message, 'standard', sid)
+    print("Socket ID: ", sid)
     print(message)
+
+
+@sio.on('connect')
+def connect(sid, environ):
+    print(sid + " connected")
+    sio.enter_room(sid, room='standard')
+
+
+async def send_message(message, room, sid):
+    message = messages.message_to_list(message)
+    await sio.emit('message', message, room=room, skip_sid=sid)
 
 
 app.router.add_get('/', index)
 
 if __name__ == '__main__':
-    web.run_app(app)
+    web.run_app(app, port='56789')
