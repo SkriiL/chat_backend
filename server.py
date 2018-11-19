@@ -1,6 +1,7 @@
 from aiohttp import web
 import socketio
 import messages
+import users
 
 sio = socketio.AsyncServer()
 app = web.Application()
@@ -24,6 +25,16 @@ async def print_message(sid, message):
 def connect(sid, environ):
     print(sid + " connected")
     sio.enter_room(sid, room='standard')
+
+
+@sio.on('getUserById')
+async def get_user_by_id(sid, id_str):
+    user = users.get_single_by_id(id_str)
+    await send_single_user(sid, user)
+
+
+async def send_single_user(sid, user):
+    await sio.emit('user', user, room=sid)
 
 
 async def send_message(message, room, sid):
