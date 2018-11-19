@@ -18,6 +18,7 @@ def get_single_by_username(username):
     c.execute('SELECT * FROM users WHERE username=?', params)
     user = c.fetchone()
     conn.close()
+    user = user[:-2]
     return list(user)
 
 

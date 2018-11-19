@@ -30,7 +30,8 @@ def connect(sid, environ):
 @sio.on('getUserById')
 async def get_user_by_id(sid, id_str):
     user = users.get_single_by_id(id_str)
-    await send_single_user(sid, user)
+    #await send_single_user(sid, user)
+    return user
 
 
 async def send_single_user(sid, user):
