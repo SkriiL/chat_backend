@@ -46,20 +46,28 @@ def add(user):
 
 
 def edit(user):
-    user = user.split('|')
-    delete_by_id(user[0])
-    conn = sqlite3.connect('db.db')
-    c = conn.cursor()
-    params = (int(user[0]), user[1], user[2], user[3], user[4], user[5])
-    c.execute('INSERT INTO users VALUES(?,?,?,?,?,?)', params)
-    conn.commit()
-    conn.close()
+    try:
+        user = user.split('|')
+        delete_by_id(user[0])
+        conn = sqlite3.connect('db.db')
+        c = conn.cursor()
+        params = (int(user[0]), user[1], user[2], user[3], user[4], user[5])
+        c.execute('INSERT INTO users VALUES(?,?,?,?,?,?)', params)
+        conn.commit()
+        conn.close()
+        return True
+    except:
+        return False
 
 
 def delete_by_id(id):
-    conn = sqlite3.connect('db.db')
-    c = conn.cursor()
-    params = (int(id),)
-    c.execute('DELETE FROM users WHERE id=?', params)
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect('db.db')
+        c = conn.cursor()
+        params = (int(id),)
+        c.execute('DELETE FROM users WHERE id=?', params)
+        conn.commit()
+        conn.close()
+        return True
+    except:
+        return False
