@@ -18,7 +18,10 @@ def get_single_by_username(username):
     c.execute('SELECT * FROM users WHERE username=?', params)
     user = c.fetchone()
     conn.close()
+    if user is None:
+        user = ['-1']
     user = user[:-2]
+    print(user)
     return list(user)
 
 
@@ -33,9 +36,10 @@ def get_all():
 
 def add(user):
     user = user.split('|')
+    id = len(get_all()) + 1
     conn = sqlite3.connect('db.db')
     c = conn.cursor()
-    params = (int(user[0]), user[1], user[2], user[3], '', '')
+    params = (id, user[0], user[1], user[2], '', '')
     c.execute('INSERT INTO users VALUES(?,?,?,?,?,?)', params)
     conn.commit()
     conn.close()

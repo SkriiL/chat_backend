@@ -30,11 +30,41 @@ def connect(sid, environ):
 @sio.on('getUserById')
 async def get_user_by_id(sid, id_str):
     user = users.get_single_by_id(id_str)
-    #await send_single_user(sid, user)
-    return user
+    await send_user(sid, user)
 
 
-async def send_single_user(sid, user):
+@sio.on('getUserByName')
+async def get_user_by_username(sid, username):
+    user = users.get_single_by_username(username)
+    await send_user(sid, user)
+
+
+@sio.on('addUser')
+async def add_user(sid, user_str):
+    users.add(user_str)
+
+
+@sio.on('getAllUsers')
+async def get_all_users(sid, arg):
+    all_users = users.get_all()
+    await send_all_users(sid, all_users)
+
+
+@sio.on('editUser')
+async def edit_user(sid, user_str):
+    users.edit(user_str)
+
+
+@sio.on('deleteUser')
+async def delete_user(sid, id_str):
+    users.delete_by_id(id_str)
+
+
+async def send_all_users(sid, users):
+    await sio.emit('allUsers', users, room=sid)
+
+
+async def send_user(sid, user):
     await sio.emit('user', user, room=sid)
 
 
